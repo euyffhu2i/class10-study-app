@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Study System | Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+      <div style="width: 40px; height: 40px; background: var(--a1); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white;">
+        <i class="lucide-shield-check"></i>
+      </div>
+      <h2 style="font-size: 1.25rem;">Admin Panel</h2>
+    </div>
+
+    <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <button class="btn active" style="justify-content: flex-start; background: var(--card2); width: 100%;" onclick="showAdminScreen('overview')">
+        <i class="lucide-layout-dashboard"></i> Overview
+      </button>
+      <button class="btn" style="justify-content: flex-start; width: 100%;" onclick="showAdminScreen('students')">
+        <i class="lucide-users"></i> Students
+      </button>
+      <button class="btn" style="justify-content: flex-start; width: 100%;" onclick="showAdminScreen('notes')">
+        <i class="lucide-book-open"></i> Notes Monitor
+      </button>
+      <button class="btn" style="justify-content: flex-start; width: 100%;" onclick="showAdminScreen('activity')">
+        <i class="lucide-activity"></i> Activity
+      </button>
+      <button id="admin-toggle-theme" class="btn" style="justify-content: flex-start; width: 100%;">
+        <i class="lucide-moon"></i> Appearance
+      </button>
+    </nav>
+
+    <div style="margin-top: auto;">
+      <button class="btn" style="width: 100%; justify-content: flex-start; color: var(--danger);" id="admin-logout">
+        <i class="lucide-log-out"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    
+    <!-- Overview Screen -->
+    <section id="admin-screen-overview" class="admin-screen active">
+      <h1 style="margin-bottom: 2rem;">Dashboard Overview</h1>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <div class="value" id="stat-total-students">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Notes</h3>
+          <div class="value" id="stat-total-notes">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Important Notes</h3>
+          <div class="value" id="stat-important-notes">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Active Today</h3>
+          <div class="value" id="stat-active-today">0</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div class="card">
+          <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
+          <div id="admin-recent-activity">
+            <!-- Activity list -->
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom: 1.5rem;">Notes by Group</h3>
+          <div id="admin-notes-by-group">
+            <!-- Stats list -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Students Screen -->
+    <section id="admin-screen-students" class="admin-screen" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Manage Students</h1>
+        <button class="btn btn-primary" onclick="openAdminModal('add-student-modal')">
+          <i class="lucide-plus"></i> Add Student
+        </button>
+      </div>
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead style="background: var(--card2);">
+            <tr>
+              <th style="padding: 1rem;">Name</th>
+              <th style="padding: 1rem;">ID</th>
+              <th style="padding: 1rem;">Group</th>
+              <th style="padding: 1rem;">Notes</th>
+              <th style="padding: 1rem;">Last Active</th>
+              <th style="padding: 1rem;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-students-table">
+            <!-- Student rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Notes Monitor Screen -->
+    <section id="admin-screen-notes" class="admin-screen" style="display: none;">
+      <h1 style="margin-bottom: 2rem;">Notes Monitor</h1>
+      <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <select id="admin-note-filter-group" class="btn" style="background: var(--card); border: 1px solid var(--border);">
+          <option value="All">All Groups</option>
+          <option value="Science">Science</option>
+          <option value="Humanities">Humanities</option>
+          <option value="Business Studies">Business Studies</option>
+        </select>
+        <select id="admin-note-filter-subject" class="btn" style="background: var(--card); border: 1px solid var(--border);">
+          <option value="All">All Subjects</option>
+        </select>
+      </div>
+      <div id="admin-notes-monitor-list">
+        <!-- Notes list -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modals -->
+  <div id="add-student-modal" class="modal">
+    <div class="modal-content" style="border-radius: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Add New Student</h2>
+        <button class="btn" style="background: var(--card2); padding: 0.5rem;" onclick="closeAdminModal('add-student-modal')">
+          <i class="lucide-x"></i>
+        </button>
+      </div>
+      <form id="admin-add-student-form">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="admin-student-name" required>
+        </div>
+        <div class="input-group">
+          <label>Student ID</label>
+          <input type="text" id="admin-student-id" required>
+        </div>
+        <div class="input-group">
+          <label>Academic Group</label>
+          <select id="admin-student-group" required>
+            <option value="Science">Science</option>
+            <option value="Humanities">Humanities</option>
+            <option value="Business Studies">Business Studies</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="admin-student-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" style="width: 100%;">Create Student</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script>
+    function showAdminScreen(screen) {
+      document.querySelectorAll('.admin-screen').forEach(s => s.style.display = 'none');
+      document.getElementById('admin-screen-' + screen).style.display = 'block';
+      document.querySelectorAll('.admin-sidebar .btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+    function openAdminModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeAdminModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+  </script>
+</body>
+</html>
