@@ -1,7 +1,0 @@
-{
-  "name": "Class 10 Smart Study System",
-  "description": "A complete modern web application for Class 10 students with Student and Admin panels, offline support, and Firebase integration.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}
